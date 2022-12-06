@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: ops
+    database: "arteli_app_db_{{ target.name }}"
+    schema: ops
+    tables:
+      - name: action_store_completion_date_acks
+
+models:
+  - name: base_ops__action_store_completion_date_acks
+    columns:
+      - name: action_store_id
+        data_type: integer
+        data_tests:
+          - not_null
+          - unique

@@ -1,0 +1,102 @@
+version: 2
+
+sources:
+  - name: core
+    database: "arteli_app_db_{{ target.name }}"
+    schema: from_core
+    tables:
+      - name: action_stores
+      - name: sister_subgroups
+
+models:
+  - name: base_core__action_stores
+    columns:
+      - name: id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: action_set_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: action_set_finalized_at
+        data_type: date
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_add
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: created_at
+        data_type: datetime
+        data_tests:
+          - not_null
+      - name: past_sales
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38, 2)
+      - name: is_manual
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: completed_by_run_id
+        data_type: integer
+      - name: completion_date
+        data_type: date
+      - name: completion_status_str
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: dependent_action_store_id
+        data_type: integer
+      - name: principal_action_store_id
+        data_type: integer
+  - name: base_core__sister_subgroups
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: user_job_timestamp
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - category_id
+            - subgroup_id
+            - user_job_timestamp

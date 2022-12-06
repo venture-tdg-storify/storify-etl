@@ -1,0 +1,205 @@
+version: 2
+
+sources:
+  - name: ash
+    database: arteli_db_ingestion
+    schema: ash_ingestion
+    tables:
+      - name: raw_inventory
+      - name: raw_locations
+      - name: raw_predictions
+      - name: raw_predictions_info
+      - name: raw_predictions_prod
+      - name: raw_predictions_info_prod
+      - name: raw_predictions_dev_info
+      - name: raw_products
+      - name: raw_sister
+      - name: raw_traffic
+      - name: raw_transactions
+
+models:
+  - name: base_ash__inventory
+    columns:
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: floor_start_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: inventory_date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: base_ash__predictions
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - store_id
+  - name: base_ash__products
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_exclusive
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_new
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: code
+        data_type: varchar
+      - name: color
+        data_type: varchar
+  - name: base_ash__stores
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_active
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: address_city
+        data_type: varchar
+      - name: address_country
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: address_postal_code
+        data_type: varchar
+      - name: address_state
+        data_type: varchar
+      - name: floor_sqft
+        data_type: integer
+  - name: base_ash__store_daily_visitors
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: created_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: visitor_count
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - created_date
+  - name: base_ash__transactions
+    columns:
+      - name: order_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: base_ash__sisters
+    columns:
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: base_ash__predictions_info
+    description: Predictions Info
+    columns:
+      - name: generated_at
+        data_type: timestamp
+        data_tests:
+          - not_null

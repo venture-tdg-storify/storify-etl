@@ -1,0 +1,92 @@
+version: 2
+
+sources:
+  - name: financial__economic_essentials
+    database: financial__economic_essentials
+    schema: cybersyn
+    tables:
+      - name: fx_rates_timeseries
+  - name: us_housing__real_estate_essentials
+    database: us_housing__real_estate_essentials
+    schema: cybersyn
+    tables:
+      - name: usps_address_change_timeseries
+      - name: us_real_estate_timeseries
+
+models:
+  - name: currency_exchange_rates
+    columns:
+      - name: currency
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: value
+        data_type: float
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: real_estate_constructions
+    columns:
+      - name: county_fips
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: variable
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: year
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: month
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: value
+        data_type: integer
+        data_tests:
+          - not_null
+  - name: tenants
+    columns:
+      - name: id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: internal_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: codebase_name
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: usps_address_changes
+    columns:
+      - name: zip_code
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: variable
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: year
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: month
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: value
+        data_type: integer
+        data_tests:
+          - not_null

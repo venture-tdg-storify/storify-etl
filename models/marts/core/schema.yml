@@ -1,0 +1,376 @@
+version: 2
+
+models:
+  - name: dim_core__categories
+    description: Categories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: description
+        data_type: varchar
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - name
+  - name: dim_core__groups
+    description: Groups
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - name
+  - name: dim_core__subcategories
+    description: Subcategories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+  - name: dim_core__subgroups
+    description: Subgroups
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - name
+  - name: dim_core__products
+    description: Products
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: manufacturer_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: code
+        data_type: varchar
+      - name: flags
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: tags
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: image_urls
+        data_type: varchar
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - manufacturer_id
+  - name: dim_core__stores
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_active
+        data_type: boolean
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - id
+  - name: dim_core__tenants
+    columns:
+      - name: id
+        data_type: integer
+        data_tests:
+          - not_null
+          - unique
+      - name: internal_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: predictions_timestamp
+        data_type: timestamp
+        data_tests:
+          - not_null
+  - name: fct_core__info
+    description: Info table - Tells us when was the last run
+    columns:
+      - name: uniqueness_key
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: run_timestamp
+        data_type: timestamp
+        data_tests:
+          - not_null
+  - name: fct_core__recommendations
+    description: Recommendations
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_on_floor
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: past_sales
+        data_type: number(38,2)
+      - name: avg_daily_on_floor_sales
+        data_type: number(38,2)
+      - name: flags
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38,2)
+      - name: floor_date
+        data_type: date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - product_id
+            - store_id
+  - name: fct_core__action_store_sales
+    description: Action Store Sales
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: action_store_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - action_store_id
+            - date
+  - name: fct_core__daily_group_sales
+    description: Daily Group Sales
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - category_id
+            - group_id
+            - store_id
+            - date
+            - type
+  - name: fct_core__action_store_completion_dates
+    description: Action Store Completion Dates
+    columns:
+      - name: action_store_id
+        data_type: integer
+        data_tests:
+          - not_null
+          - unique
+      - name: completion_date
+        data_type: date
+  - name: dim_core__ai_action_stores
+    description: AI Action Stores
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+      - name: product_code
+        data_type: varchar
+      - name: remove_group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: remove_predicted_sales
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+      - name: add_group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: add_predicted_sales
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - store_id
+            - category_id
+            - subcategory_id
+            - product_code
+            - remove_group_id
+            - add_group_id

@@ -1,0 +1,18 @@
+version: 2
+
+seeds:
+  - name: seed_core__calendar
+    config:
+      delimiter: ','
+  - name: seed_core__dev_tenants
+    config:
+      delimiter: ','
+  - name: seed_core__stage_tenants
+    config:
+      delimiter: ','
+  - name: seed_core__prod_tenants
+    config:
+      delimiter: ','
+  - name: seed_core__demo_tenants
+    config:
+      delimiter: ','

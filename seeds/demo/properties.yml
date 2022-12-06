@@ -1,0 +1,6 @@
+version: 1
+
+seeds:
+  - name: seed_demo__cities
+    config:
+      delimiter: ','

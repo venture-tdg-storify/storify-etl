@@ -1,0 +1,335 @@
+version: 2
+
+models:
+  - name: stg_dsg_demo__action_store_completion_dates
+    columns:
+      - name: action_store_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: completion_date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: stg_dsg_demo__action_stores
+    columns:
+      - name: id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: action_set_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: action_set_finalized_at
+        data_type: date
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_add
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: created_at
+        data_type: datetime
+        data_tests:
+          - not_null
+      - name: past_sales
+        data_type: number(38, 2)
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38, 2)
+      - name: is_manual
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: completed_by_run_id
+        data_type: integer
+      - name: completion_date
+        data_type: date
+      - name: completion_status_str
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: dependent_action_store_id
+        data_type: integer
+      - name: principal_action_store_id
+        data_type: integer
+  - name: stg_dsg_demo__categories
+    description: Categories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: description
+        data_type: varchar
+      - name: is_available_in_app
+        data_type: boolean
+        data_tests:
+          - not_null
+  - name: stg_dsg_demo__groups
+    description: Groups (Series for TDG)
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+  - name: stg_dsg_demo__subcategories
+    description: Subcategories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: stg_dsg_demo__subgroups
+    description: Subgroups (Sub-series for TDG)
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+  - name: stg_dsg_demo__products
+    description: Products
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_exclusive
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_commodity
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_new
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_available_in_app
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: class
+        data_type: varchar
+      - name: code
+        data_type: varchar
+      - name: color
+        data_type: varchar
+      - name: image_url
+        data_type: varchar
+      - name: retail_type
+        data_type: varchar
+  - name: stg_dsg_demo__recommendations
+    description: Recommendations
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_on_floor
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: past_sales
+        data_type: number(38,2)
+      - name: avg_daily_on_floor_sales
+        data_type: number(38,2)
+      - name: is_available_in_app
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: flags
+        data_type: array
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38,2)
+      - name: floor_date
+        data_type: date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - store_id
+  - name: stg_dsg_demo__stores
+    description: Stores
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_active
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: address_city
+        data_type: varchar
+      - name: address_country
+        data_type: varchar
+      - name: address_postal_code
+        data_type: varchar
+      - name: address_state
+        data_type: varchar
+      - name: address_street_1
+        data_type: varchar
+      - name: address_street_2
+        data_type: varchar
+      - name: brand
+        data_type: integer
+      - name: cost_per_sqft
+        data_type: number(38, 2)
+      - name: distribution_center_id
+        data_type: integer
+      - name: floor_perc
+        data_type: number(38, 2)
+      - name: floor_sqft
+        data_type: integer
+      - name: other_sqft
+        data_type: integer
+      - name: store_type
+        data_type: varchar
+      - name: total_occupancy_costs
+        data_type: integer
+      - name: total_sqft
+        data_type: integer
+  - name: stg_dsg_demo__action_store_sales
+    description: Action Store Sales
+    columns:
+      - name: action_store_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - action_store_id
+            - date
+  - name: stg_dsg_demo__daily_group_sales
+    description: Daily Group Sales
+    columns:
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - category_id
+            - group_id
+            - store_id
+            - date
+            - type

@@ -1,0 +1,137 @@
+version: 2
+
+models:
+  - name: fct_power_bi__quarter_sales
+    columns:
+      - name: tenant_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: quarter
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: year
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_name
+            - year
+            - quarter
+  - name: fct_power_bi__average_daily_transaction_amount
+    columns:
+      - name: tenant_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: avg_amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_name
+            - transaction_date
+  - name: fct_power_bi__category_daily_sales
+    columns:
+      - name: tenant_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_name
+            - transaction_date
+            - category_id
+  - name: fct_power_bi__daily_store_per_category_sales
+    columns:
+      - name: tenant_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: category_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_name
+            - transaction_date
+            - category_name
+            - store_name
+  - name: fct_power_bi__action_store_sales
+    description: Action Store Sales
+    columns:
+      - name: tenant_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_name
+        data_type: varchar
+      - name: group_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: action_store_is_manual
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_name
+            - category_name
+            - subcategory_name
+            - group_name
+            - date
+            - action_store_is_manual

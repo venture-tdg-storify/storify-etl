@@ -1,0 +1,18 @@
+version: 2
+
+seeds:
+  - name: seed_tdg__category_data
+    config:
+      column_types:
+        id: varchar
+        name: varchar
+        description: varchar
+  - name: seed_tdg__non_tariff_series
+    config:
+      column_types:
+        series: varchar
+  - name: seed_tdg__store_data
+    config:
+      column_types:
+        id: varchar(3)
+        is_active: boolean

@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: base_dsg_demo__predictions_info
+    columns:
+      - name: generated_at
+        data_type: timestamp
+        data_tests:
+          - not_null

@@ -1,0 +1,283 @@
+version: 2
+
+sources:
+  - name: tdg
+    database: arteli_db_ingestion
+    schema: tdg_ingestion
+    tables:
+      - name: raw_inventory
+      - name: raw_old_inventory
+      - name: raw_kits
+      - name: raw_locations
+      - name: raw_predictions
+      - name: raw_predictions_info
+      - name: raw_predictions_prod
+      - name: raw_predictions_info_prod
+      - name: raw_predictions_dev_info
+      - name: raw_products
+      - name: raw_storis_products
+      - name: raw_product_map
+      - name: raw_traffic
+      - name: raw_transactions
+      - name: raw_old_transactions
+
+models:
+  - name: base_tdg__inventory
+    description: "Each physical product is represented as a row"
+    columns:
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: inventory_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_on_floor
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: reason_code
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: base_tdg__kits
+    description: Kits
+    columns:
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: alt_kit_product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - alt_kit_product_id
+  - name: base_tdg__predictions
+    description: "Predictions are result of our ML model"
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: predicted_sales
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - store_id
+  - name: base_tdg__products
+    description: "Products"
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_exclusive
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_commodity
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_new
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: imported_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: class
+        data_type: varchar
+      - name: code
+        data_type: varchar
+      - name: color
+        data_type: varchar
+      - name: image_url
+        data_type: varchar
+      - name: retail_type
+        data_type: varchar
+  - name: base_tdg__product_map
+    columns:
+      - name: alt_product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: base_tdg__store_daily_visitors
+    description: "Number of total store visitors by each day"
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: created_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: visitor_count
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - created_date
+  - name: base_tdg__stores
+    description: Stores
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: imported_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: address_city
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: address_street_1
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: distribution_center_id
+        data_type: integer
+  - name: base_tdg__storis_products
+    description: Storis Products
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: manufacturer_id
+        data_type: varchar
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: description
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: description_2
+        data_type: varchar
+      - name: status
+        data_type: varchar
+      - name: purchase_status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: imported_date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: base_tdg__transactions
+    description: Transactions
+    columns:
+      - name: order_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+  - name: base_tdg__predictions_info
+    description: Predictions Info
+    columns:
+      - name: generated_at
+        data_type: timestamp
+        data_tests:
+          - not_null

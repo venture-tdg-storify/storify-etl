@@ -1,0 +1,92 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'storify_etl'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'storify_etl'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+seeds:
+  storify_etl:
+    core:
+      +schema: core
+    tdg:
+      +schema: tdg
+    dsg:
+      +schema: dsg
+
+models:
+  +contract:
+    enforced: true
+  storify_etl:
+    marts:
+      core:
+        database: "arteli_app_db_{{ target.name }}"
+        schema: 'core'
+        +grants:
+          select: "arteli_app_{{ target.name }}_role"
+        +tags: "core"
+      ash:
+        schema: 'ash'
+        +enabled: "{{ target.name != 'demo' }}"
+        +grants:
+          select: 'ml_dev_role'
+        +tags: ["dw", "ash"]
+      dsg:
+        schema: 'dsg'
+        +enabled: "{{ target.name != 'demo' }}"
+        +grants:
+          select: "{{ ['ml_dev_role', 'power_bi_role'] if target.name == 'prod' else 'ml_dev_role' }}"
+        +tags: ["dw", "dsg"]
+      tdg:
+        schema: 'tdg'
+        +enabled: "{{ target.name != 'demo' }}"
+        +grants:
+          select: "{{ ['ml_dev_role', 'power_bi_role'] if target.name == 'prod' else 'ml_dev_role' }}"
+        +tags: ["dw", "tdg"]
+      power_bi:
+        schema: 'power_bi'
+        +enabled: "{{ target.name != 'demo' }}"
+        +grants:
+          select: 'power_bi_role'
+        +tags: [ "dw", "power_bi" ]
+    staging:
+      core:
+        schema: 'core'
+      ash:
+        +enabled: "{{ target.name != 'demo' }}"
+        schema: 'ash'
+      dsg:
+        schema: 'dsg'
+      tdg:
+        +enabled: "{{ target.name != 'demo' }}"
+        schema: 'tdg'
+      dsg_demo:
+        +enabled: "{{ target.name == 'demo' }}"
+        schema: 'dsg_demo'
+      ops:
+        schema: 'ops'
+    utils:
+      schema: 'utils'
+      +grants:
+        select: "ml_dev_role"
+
+on-run-start: "{{ create_alerts() }}"

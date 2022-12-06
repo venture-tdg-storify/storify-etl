@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_core__sister_subgroups
+    columns:
+      - name: tenant_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: user_job_timestamp
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tenant_id
+            - category_id
+            - subgroup_id

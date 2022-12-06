@@ -1,0 +1,352 @@
+version: 2
+
+models:
+  - name: dim_tdg__categories
+    description: Categories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: description
+        data_type: varchar
+  - name: dim_tdg__products
+    description: Products
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subcategory_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: group_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: subgroup_name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_exclusive
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_commodity
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_new
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: type
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: status
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: class
+        data_type: varchar
+      - name: code
+        data_type: varchar
+      - name: color
+        data_type: varchar
+      - name: image_url
+        data_type: varchar
+      - name: retail_type
+        data_type: varchar
+  - name: dim_tdg__stores
+    description: Stores
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: is_active
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: address_city
+        data_type: varchar
+      - name: address_country
+        data_type: varchar
+      - name: address_postal_code
+        data_type: varchar
+      - name: address_state
+        data_type: varchar
+      - name: address_street_1
+        data_type: varchar
+      - name: address_street_2
+        data_type: varchar
+      - name: brand
+        data_type: varchar
+      - name: cost_per_sqft
+        data_type: number(38, 2)
+      - name: distribution_center_id
+        data_type: integer
+      - name: floor_perc
+        data_type: number(38, 2)
+      - name: floor_sqft
+        data_type: integer
+      - name: other_sqft
+        data_type: integer
+      - name: store_type
+        data_type: varchar
+      - name: total_occupancy_costs
+        data_type: integer
+      - name: total_sqft
+        data_type: integer
+  - name: fct_tdg__inventory
+    columns:
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: inventory_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: is_on_floor
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: on_floor_days_count
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: reason_codes
+        data_type: varchar
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - store_id
+            - inventory_date
+  - name: fct_tdg__store_daily_visitors
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: created_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: visitor_count
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - created_date
+  - name: fct_tdg__store_monthly_sales
+    columns:
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: year
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: month
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: amount_per_visitor
+        data_type: number(38,2)
+      - name: amount_per_visitor_per_sqft
+        data_type: number(38,2)
+      - name: total_amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+      - name: total_visitor_count
+        data_type: integer
+        data_tests:
+          - not_null
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - year
+            - month
+  - name: dim_tdg__subcategories
+    description: Subcategories
+    columns:
+      - name: id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+  - name: fct_tdg__swap_performance
+    columns:
+      - name: swap_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: plan_finalized_at
+        data_type: date
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: add_category_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: add_group_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: add_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: add_on_floor_days_after_add_date
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: add_amount_after_add_date
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+      - name: add_amount_per_day_after_add_date
+        data_type: number(38,2)
+      - name: add_created_at
+        data_type: timestamp_ntz
+        data_tests:
+          - not_null
+      - name: add_subcategory_id
+        data_type: varchar
+      - name: dependent_swap_id
+        data_type: integer
+      - name: drop_amount_in_other_stores_after_add_date
+        data_type: number(38,2)
+      - name: drop_category_id
+        data_type: varchar
+      - name: drop_created_at
+        data_type: timestamp_ntz
+      - name: drop_date
+        data_type: date
+      - name: drop_group_id
+        data_type: varchar
+      - name: drop_on_floor_days_in_other_stores_after_add_date
+        data_type: integer
+      - name: drop_subcategory_id
+        data_type: varchar
+      - name: predicted_sales_now
+        data_type: number(38,2)
+      - name: predicted_sales_when_created
+        data_type: number(38,2)
+      - name: predicted_sales_when_created_per_day
+        data_type: number(38,2)
+  - name: fct_tdg__transactions
+    description: Transactions
+    columns:
+      - name: order_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: store_id
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: transaction_date
+        data_type: date
+        data_tests:
+          - not_null
+      - name: amount
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+      - name: amount_cad
+        data_type: number(38,2)
+        data_tests:
+          - not_null
+      - name: group_id
+        data_type: varchar
+      - name: category_id
+        data_type: varchar
+      - name: is_in_inventory
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: is_on_floor
+        data_type: boolean
+        data_tests:
+          - not_null
+      - name: on_floor_days_count
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null

@@ -1,0 +1,12 @@
+[sqlfluff]
+dialect = snowflake
+templater = dbt
+processes = -1
+exclude_rules = ST03, ST06
+
+[sqlfluff:templater:jinja]
+load_macros_from_path = macros/
+apply_dbt_builtins = True
+
+[sqlfluff:rules:references.keywords]
+ignore_words = name, type, transactions, date, value
