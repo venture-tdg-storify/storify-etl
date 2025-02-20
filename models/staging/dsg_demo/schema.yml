@@ -162,6 +162,8 @@ models:
         data_type: varchar
         data_tests:
           - not_null
+      - name: purchase_status
+        data_type: varchar
       - name: is_exclusive
         data_type: boolean
         data_tests:
